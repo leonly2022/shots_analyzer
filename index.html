@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>射门分析系统 v1.019</title>
+    <title>射门分析系统 v1.020</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -122,7 +122,10 @@
             const matchid = values[hIdx['matchid']];
             const team = values[hIdx['passer_team']]?.trim() || '未知';
             const opponent = matchOpponent[`${matchid}_${team}`] || '未知';
-            const player = values[hIdx['passer_name']]?.trim() || '未知';
+            
+            const rawPlayerName = values[hIdx['passer_name']]?.trim() || '未知';
+            const rawJersey = values[hIdx['passer_jersey']]?.trim();
+            const player = rawJersey && rawJersey !== '' ? `${rawJersey} - ${rawPlayerName}` : rawPlayerName;
             
             // 提前获取半场和进攻方向，用于前置判定传球的目标坐标是否在禁区内
             const rawHalf = values[hIdx['idhalf']]?.trim();
@@ -315,7 +318,7 @@
                     processedShotLines.add(j); 
                     break; 
                 }
-                if (nextTeam === team && nextPlayer === player && (nextEvent?.toLowerCase().includes('shot') || nextEvent === 'Penalty')) {
+                if (nextTeam === team && nextPlayer === rawPlayerName && (nextEvent?.toLowerCase().includes('shot') || nextEvent === 'Penalty')) {
                     processedShotLines.add(j);
                     continue;
                 }
